@@ -1,11 +1,1 @@
-{
-  "events": [
-    {
-      "id": "e1",
-      "title": "A dummy event",
-      "date": "2023-02-22",
-      "image": "https://blog.hubspot.de/hubfs/Germany/Blog_images/Optimize_Marketing%20Events%20DACH%202021.jpg",
-      "description": "Join this amazing event and connect with fellow developers."
-    }
-  ]
-}
+{"events":[{"title":"test1111","image":"https://media.cntraveler.com/photos/591f1c7d1f187a2af3dedef0/master/w_2240%2Cc_limit/barcelona-park-guell-GettyImages-512152500.jpg","date":"2024-04-07","description":"czcxz","id":"255fc771-2c03-4c56-bdcb-87b3f8bc4efe"},{"title":"dfadsfa","image":"https://media.cntraveler.com/photos/591f1c7d1f187a2af3dedef0/master/w_2240%2Cc_limit/barcelona-park-guell-GettyImages-512152500.jpg","date":"2024-03-14","description":"dasda","id":"47ef28f0-db3a-44d2-86ff-95a5307955c5"},{"id":"e1","title":"A dummy event","date":"2023-02-22","image":"https://blog.hubspot.de/hubfs/Germany/Blog_images/Optimize_Marketing%20Events%20DACH%202021.jpg","description":"Join this amazing event and connect with fellow developers."}]}

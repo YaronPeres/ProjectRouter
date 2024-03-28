@@ -1,39 +1,122 @@
-import { useNavigate } from 'react-router-dom';
+import {
+  Form,
+  json,
+  redirect,
+  useActionData,
+  useNavigate,
+  useNavigation,
+} from "react-router-dom";
 
-import classes from './EventForm.module.css';
+import classes from "./EventForm.module.css";
 
 function EventForm({ method, event }) {
   const navigate = useNavigate();
-  function cancelHandler() {
-    navigate('..');
-  }
+  const navigation = useNavigation();
+  const data = useActionData();
 
+  const isSubmitting = navigation.state === "submitting";
+
+  function cancelHandler() {
+    navigate("..");
+  }
+  // Form is used to extract data from the form component.
+  // Form is sent to the action, will iinclude all the form data.
   return (
-    <form className={classes.form}>
+    <Form method={method} className={classes.form}>
+      {/* show errors from the backend */}
+      {data && data.errors && (
+        <ul>
+          {Object.values(data.errors).map((err) => (
+            <li key={err}>{err}</li>
+          ))}
+        </ul>
+      )}
       <p>
         <label htmlFor="title">Title</label>
-        <input id="title" type="text" name="title" required />
+        <input
+          id="title"
+          type="text"
+          // name is used to extract the data
+          name="title"
+          required
+          defaultValue={event ? event.title : ""}
+        />
       </p>
       <p>
         <label htmlFor="image">Image</label>
-        <input id="image" type="url" name="image" required />
+        <input
+          id="image"
+          type="url"
+          name="image"
+          required
+          defaultValue={event ? event.image : ""}
+        />
       </p>
       <p>
         <label htmlFor="date">Date</label>
-        <input id="date" type="date" name="date" required />
+        <input
+          id="date"
+          type="date"
+          name="date"
+          required
+          defaultValue={event ? event.date : ""}
+        />
       </p>
       <p>
         <label htmlFor="description">Description</label>
-        <textarea id="description" name="description" rows="5" required />
+        <textarea
+          id="description"
+          name="description"
+          rows="5"
+          required
+          defaultValue={event ? event.description : ""}
+        />
       </p>
       <div className={classes.actions}>
         <button type="button" onClick={cancelHandler}>
           Cancel
         </button>
-        <button>Save</button>
+        <button disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "save"}
+        </button>
       </div>
-    </form>
+    </Form>
   );
 }
 
 export default EventForm;
+
+export async function action({ request, params }) {
+  const method = request.method;
+  const data = await request.formData();
+  // get access to the differenct input fields submitted in the form
+  // to get we pass string as different identities, the values we chose for name
+  const eventData = {
+    title: data.get("title"),
+    image: data.get("image"),
+    date: data.get("date"),
+    description: data.get("description"),
+  };
+  let url = "http://localhost:8080/events";
+  if (method === "PATCH") {
+    const eventId = params.eventId;
+    url = "http://localhost:8080/events/" + eventId;
+  }
+  const response = await fetch(url, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(eventData),
+  });
+  //return the response that u get from the backend.
+  //
+  if (response.status === 422) {
+    return response;
+  }
+
+  if (!response.ok) {
+    throw json({ message: "Could not save event" }, { status: 500 });
+  }
+  return redirect("/events");
+}
